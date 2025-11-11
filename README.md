@@ -67,7 +67,7 @@ npm start
 ```
 ├─ /src
 │  ├─ /controllers    # Logique des routes
-│  ├─ /services       # Business logic
+│  ├─ /db             # Connexions au db
 │  ├─ /models         # Models SQL et NoSQL
 │  ├─ /routes         # Définition des endpoints
 │  ├─ /middlewares    # CORS, rate limiter, auth, etc.
