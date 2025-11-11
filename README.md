@@ -24,7 +24,6 @@ cd orium_agence_scrapper
 npm init -y
 
 npm i express dotenv cors
-npm i prisma @prisma/client
 npm i swagger-ui-express swagger-jsdoc
 npm i mongoose
 npm i -D jest supertest cross-env
