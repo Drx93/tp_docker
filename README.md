@@ -26,11 +26,6 @@ npm i prisma @prisma/client
 npm i swagger-ui-express swagger-jsdoc
 npm i mongoose
 npm i -D jest supertest cross-env
-```
-
-### 3. (Optionnel mais recommandé) Installer des packages supplémentaires
-
-```bash
 npm i bcrypt jsonwebtoken express-rate-limit
 ```
 
