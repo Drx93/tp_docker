@@ -17,13 +17,13 @@ const RestaurantSchema = new Schema({ //On définit le schéma de la collection 
     thumbnail: {type: String, required: true},
     description: {type: String},
     openState: {type: String},
-    serviceOptions: {type: String},
-    keyword: {type: String, required: true},
+    serviceOptions: {type: [String]},
+    keyword: {type: [String], required: true},
     googleMapsRank: {type: Number},
     dataId: {type: String, required: true},
     placeId: {type: String, required: true},
     mainEmail: {type: String},
-    otherEmails: {type: String}
+    otherEmails: {type: [String]}
 });
   
 

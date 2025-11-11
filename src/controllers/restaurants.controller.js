@@ -151,7 +151,7 @@ const updateRestaurant = async (req, res) => { // Met à jour un restaurant par 
 //-------------------------------------- PATCH ----------------------------------//
 //------------------------------------------------------------------------------//
 
-const updateRestaurantField = async (req, res, fieldName) => { // Met à jour un champ spécifique (fieldName) d'un restaurant par ID
+const updateRestaurantField = (fieldName) => async (req, res) => { // Met à jour un champ spécifique (fieldName) d'un restaurant par ID
 	try {
 		const { id } = req.params;
 		const updateValue = req.body[fieldName];
