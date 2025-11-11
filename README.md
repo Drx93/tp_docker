@@ -25,7 +25,7 @@ npm init -y
 
 npm i express dotenv cors
 npm i swagger-ui-express swagger-jsdoc
-npm i pg mongoose
+npm i pg mongoose mongodb-memory-server
 npm i -D jest supertest cross-env
 npm i bcrypt jsonwebtoken express-rate-limit
 ```
