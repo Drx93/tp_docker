@@ -21,6 +21,8 @@ cd orium_agence_scrapper
 ### 2. Installer les dépendances
 
 ```bash
+npm init -y
+
 npm i express dotenv cors
 npm i prisma @prisma/client
 npm i swagger-ui-express swagger-jsdoc
