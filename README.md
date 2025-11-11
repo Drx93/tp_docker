@@ -95,6 +95,3 @@ Pour lancer les tests :
 ```bash
 npm test
 ```
-
-Veux‑tu que je fasse ça ?
-```
