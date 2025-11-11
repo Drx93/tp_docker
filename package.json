@@ -4,7 +4,9 @@
   "description": "*Le blabla de l'intro décrivant le projet en quoi il consiste , que je vais déveloper tout à l'heure*",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/server.js",
+    "dev": "cross-env NODE_ENV=development node src/server.js",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --runInBand --detectOpenHandles --testTimeout=30000"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
     "express-rate-limit": "^8.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.3",
+    "pg": "^8.16.3",
     "prisma": "^6.19.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"

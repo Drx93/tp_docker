@@ -5,6 +5,8 @@ CREATE TABLE roles ( /* Table pour les rôles des utilisateurs (administrateurs,
 
 CREATE TABLE users ( /* Table pour les utilisateurs */
     id SERIAL PRIMARY KEY,
+    lastname text NOT NULL,
+    firstname text NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     role_id INTEGER REFERENCES roles(id) ON DELETE SET NULL,
@@ -17,3 +19,4 @@ CREATE TABLE user_restaurant_status ( /* Table pour enregistrer les status entre
     status TEXT[] DEFAULT '{}' CHECK (status IS NULL OR status <@ ARRAY['contacté','consulté','favori']::text[]),
     PRIMARY KEY (user_id, restaurant_mongo_id)
 );
+
