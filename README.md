@@ -24,9 +24,8 @@ cd orium_agence_scrapper
 npm init -y
 
 npm i express dotenv cors
-npm i prisma @prisma/client
 npm i swagger-ui-express swagger-jsdoc
-npm i mongoose
+npm i pg mongoose mongodb-memory-server
 npm i -D jest supertest cross-env
 npm i bcrypt jsonwebtoken express-rate-limit
 ```
@@ -39,9 +38,9 @@ Créer un fichier `.env` à la racine du projet et définir vos variables d'envi
 
 ```
 PORT=3000
-DATABASE_URL=postgresql://user:password@127.0.0.1:5432/nomdb
-MONGO_URI=mongodb://127.0.0.1:27017/nomdb
-JWT_SECRET=ton_secret_jwt
+DATABASE_URL=postgresql://postgres:votre_mot_de_passe@127.0.0.1:5432/orium_agence_scrapper_sql
+MONGO_URI=mongodb://127.0.0.1:27017/orium_agence_scrapper_nosql
+JWT_SECRET=ton_secret_jwt_key
 ```
 
 ---
