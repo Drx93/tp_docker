@@ -93,7 +93,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="app-root">
       <Header token={token} logout={logout} />
 
       <main className="card" style={{ margin: 24 }}>

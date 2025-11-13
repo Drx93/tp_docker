@@ -1,0 +1,170 @@
+/* Global styles (no media queries, no pseudo-classes) */
+
+:root {
+	--bg: #0f1720;
+	--card: #111316;
+	--muted: #9aa4b2;
+	--brand: #646cff;
+	--danger: #ff4d4f;
+	--text: #e6eef6;
+	--container-width: 1100px;
+	--gutter: 16px;
+}
+
+html, body, #root {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+	background: var(--bg);
+	color: var(--text);
+}
+
+/* Root wrapper to center the app vertically/horizontally */
+.app-root {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	min-height: 100vh;
+	padding-top: 24px;
+	padding-bottom: 24px;
+}
+
+/* Page container with fixed max width */
+.container {
+	max-width: var(--container-width);
+	width: 100%;
+	padding-left: var(--gutter);
+	padding-right: var(--gutter);
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* Header */
+.app-header {
+	width: 100%;
+	background: transparent;
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+.brand {
+	display: flex;
+	flex-direction: column;
+}
+.brand h1 {
+	margin: 0;
+	font-size: 1.15rem;
+}
+.brand .subtitle {
+	margin: 0;
+	color: var(--muted);
+	font-size: 0.9rem;
+}
+
+/* Navigation: clear nesting classes */
+.main-nav {
+	display: block;
+}
+.main-nav ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+.main-nav li {
+	display: inline-block;
+}
+.main-nav a {
+	color: var(--brand);
+	text-decoration: none;
+	font-weight: 500;
+	padding: 6px 8px;
+}
+.main-nav .logout-btn {
+	margin-left: 8px;
+	padding: 6px 10px;
+	background: transparent;
+	border: 1px solid rgba(255,255,255,0.04);
+	color: var(--text);
+	border-radius: 6px;
+}
+
+/* Card and content */
+.card {
+	width: 35%;
+	padding: 50px 1px;
+	background: var(--card);
+
+	border-radius: 8px;
+	color: var(--text);
+	box-sizing: border-box;
+	margin: 20px auto;
+}
+.card div{
+	width: 100%;
+}
+.card div h2{
+	margin-left: 10%;
+}
+.card div form{
+	width: 80% !important;
+	display: flex;
+	margin-left: 10%;
+	flex-wrap: wrap;
+}
+.card div form label{
+	width: 100%;
+}
+.card div form input{
+	width: 100%;
+	padding: 2%;
+	border-radius: 4px;
+	border: none;
+}
+.mono {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+	background: rgba(255,255,255,0.02);
+	padding: 12px;
+	border-radius: 6px;
+}
+
+.app-footer {
+	width: 100%;
+	padding-top: 14px;
+	padding-bottom: 14px;
+	margin-top: 28px;
+}
+.app-footer .footer-nav {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+/* Form helpers */
+.form-row { margin-bottom: 12px }
+label input { width: 100%; box-sizing: border-box; padding: 8px }
+
+/* Inputs: replace inline input styles (use .form-input on inputs) */
+.form-input {
+	width: 100%;
+	padding: 8px;
+	margin-top: 6px;
+	box-sizing: border-box;
+}
+
+/* Register page: form sizing (replaces inline style) */
+.register-form {
+	max-width: none;
+	margin: 0;
+	text-align: left;
+	width: 100%;
+}
+

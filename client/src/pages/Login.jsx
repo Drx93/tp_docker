@@ -38,15 +38,15 @@ export default function Login({ onLogin }) {
   return (
     <div>
       <h2>Se connecter</h2>
-      <form onSubmit={handleSubmit} style={{ maxWidth: 420, margin: '0 auto', textAlign: 'left' }}>
-        <label style={{ display: 'block', marginBottom: 8 }}>
+      <form onSubmit={handleSubmit} className="login-form">
+        <label className="form-label">
           Email
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', padding: '8px', marginTop: 6 }} />
+          <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
         </label>
 
-        <label style={{ display: 'block', marginBottom: 8 }}>
+        <label className="form-label">
           Mot de passe
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', padding: '8px', marginTop: 6 }} />
+          <input className="form-input" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
         </label>
 
         <div style={{ marginTop: 12 }}>

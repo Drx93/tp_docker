@@ -108,17 +108,17 @@ export default function Profile() {
       <main className="card" style={{ maxWidth: 640 }}>
         <h1>Mon profil</h1>
         <form onSubmit={handleSave} style={{ textAlign: 'left' }}>
-          <label style={{ display: 'block', marginBottom: 8 }}>
+          <label className="form-label">
             Prénom
             <input value={user.firstname || ''} onChange={e => setUser({ ...user, firstname: e.target.value })} required style={{ width: '100%', padding: 8, marginTop: 6 }} />
           </label>
 
-          <label style={{ display: 'block', marginBottom: 8 }}>
+          <label className="form-label">
             Nom
             <input value={user.lastname || ''} onChange={e => setUser({ ...user, lastname: e.target.value })} required style={{ width: '100%', padding: 8, marginTop: 6 }} />
           </label>
 
-          <label style={{ display: 'block', marginBottom: 8 }}>
+          <label className="form-label">
             Email
             <input type="email" value={user.email || ''} onChange={e => setUser({ ...user, email: e.target.value })} required style={{ width: '100%', padding: 8, marginTop: 6 }} />
           </label>

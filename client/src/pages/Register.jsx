@@ -47,25 +47,25 @@ export default function Register() {
   return (
     <div>
       <h2>Inscription</h2>
-      <form onSubmit={handleSubmit} style={{ maxWidth: 480, margin: '0 auto', textAlign: 'left' }}>
-        <label style={{ display: 'block', marginBottom: 8 }}>
+      <form onSubmit={handleSubmit} className="register-form">
+        <label className="form-label">
           Prénom
-          <input value={firstname} onChange={e => setFirstname(e.target.value)} required style={{ width: '100%', padding: 8, marginTop: 6 }} />
+          <input className="form-input" value={firstname} onChange={e => setFirstname(e.target.value)} required />
         </label>
 
-        <label style={{ display: 'block', marginBottom: 8 }}>
+        <label className="form-label">
           Nom
-          <input value={lastname} onChange={e => setLastname(e.target.value)} required style={{ width: '100%', padding: 8, marginTop: 6 }} />
+          <input className="form-input" value={lastname} onChange={e => setLastname(e.target.value)} required />
         </label>
 
-        <label style={{ display: 'block', marginBottom: 8 }}>
+        <label className="form-label">
           Email
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', padding: 8, marginTop: 6 }} />
+          <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
         </label>
 
-        <label style={{ display: 'block', marginBottom: 8 }}>
+        <label className="form-label">
           Mot de passe
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', padding: 8, marginTop: 6 }} />
+          <input className="form-input" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
         </label>
 
         <div style={{ marginTop: 12 }}>
