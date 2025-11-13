@@ -81,13 +81,15 @@ export default function Restaurants() {
     if (!restaurants || restaurants.length === 0) return <p>Aucun restaurant trouvé.</p>
 
     return (
-      <div>
+      <article>
       {restaurants.map((r) => {
         const id = r.id || r._id
         const key = id || JSON.stringify(r)
         const go = () => {
         if (id) {
-          window.location.hash = `#/restaurants/${id}`
+          // navigate using history.pushState so URL becomes /restaurants/:id
+          window.history.pushState({}, '', `/restaurants/${id}`)
+          window.dispatchEvent(new PopStateEvent('popstate'))
         }
         }
         return (
@@ -120,7 +122,7 @@ export default function Restaurants() {
         )
       })}
 
-      </div>
+      </article>
     )
   }
 
@@ -129,7 +131,7 @@ export default function Restaurants() {
       <nav style={{ marginBottom: 12 }}>
           <a href="/" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Accueil</a> | <strong>Restaurants</strong>
       </nav>
-      <main className="card" style={{ padding: 16 }}>
+      <main className="card" id='mainRestaurants' style={{ padding: 16 }}>
         <h2>Liste des Restaurants</h2>
         <RestaurantsList />
       </main>

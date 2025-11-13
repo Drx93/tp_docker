@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Restaurants from './pages/Restaurants'
+import RestaurantInfo from './pages/RestaurantInfos'
 import Profile from './pages/Profile'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -66,6 +67,17 @@ function App() {
     return (
       <div style={{ padding: 24 }}>
         <Restaurants />
+      </div>
+    )
+  }
+
+  // route: /restaurants/:id -> show restaurant detail
+  if (path.startsWith('/restaurants/') ) {
+    const parts = path.split('/')
+    const id = parts[2] ? decodeURIComponent(parts[2]) : null
+    return (
+      <div style={{ padding: 24 }}>
+        <RestaurantInfo id={id} />
       </div>
     )
   }
