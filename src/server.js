@@ -9,6 +9,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+const path = require('path');
+
+// Serve static frontend (same as `src/app.js`) so visiting / shows the accueil
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Home page (accueil)
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 // CORS configuration
 const cors = require('cors');

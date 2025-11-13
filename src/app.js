@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const routes = require('./routes/restaurants.routes');
 
@@ -30,9 +31,14 @@ if (process.env.CORS_ALLOW_ALL === 'true') {
 	app.use(cors());
 }
 
-// Routes
+// Serve static files (simple frontend) from src/public
+app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
 app.use('/api/restaurants', routes);
+
+// Home page (accueil)
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));

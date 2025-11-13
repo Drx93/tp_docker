@@ -4,6 +4,7 @@
   "description": "*Le blabla de l'intro décrivant le projet en quoi il consiste , que je vais déveloper tout à l'heure*",
   "main": "index.js",
   "scripts": {
+    "start": "node src/server.js",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --runInBand --detectOpenHandles --testTimeout=30000"
   },
   "repository": {
