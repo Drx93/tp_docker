@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import Login from './Login'
-import Register from './Register'
-import Restaurants from './Restaurants'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Restaurants from './pages/Restaurants'
 
 function App() {
   const [status, setStatus] = useState(null)

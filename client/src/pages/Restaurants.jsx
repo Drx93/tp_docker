@@ -6,7 +6,8 @@ export default function Restaurants() {
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
     if (!token) {
-      window.location.hash = '#/'
+      // Redirect to login when token is missing
+      window.location.hash = '#/login'
       return
     }
 
@@ -26,7 +27,7 @@ export default function Restaurants() {
       }
       // invalid -> redirect
       localStorage.removeItem('accessToken')
-      window.location.hash = '#/'
+      window.location.hash = '#/login'
     })()
   }, [])
 
