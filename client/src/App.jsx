@@ -67,6 +67,7 @@ function App() {
       </div>
     )
   }
+  
 
   if (hash === '#/register') {
     return (
