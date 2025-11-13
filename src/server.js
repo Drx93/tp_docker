@@ -9,13 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-const path = require('path');
-
-// Serve static frontend (same as `src/app.js`) so visiting / shows the accueil
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Home page (accueil)
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+// Note: legacy static frontend removed. Frontend is served separately (e.g. Vite dev server or built client).
 
 // CORS configuration
 const cors = require('cors');
@@ -57,10 +51,22 @@ app.get("/api/status", (req, res) => {
 // 404
 app.use((req, res) => res.status(404).json({ error: "Route inconnue" }));
 
-// Error handler
+// Error handler (logs full error in non-production for easier debugging)
 app.use((err, req, res, next) => {
-	console.error(" Erreur serveur:", err.message);
-	res.status(500).json({ error: "Erreur interne serveur" });
+	console.error('Erreur serveur:', err);
+	const isProd = process.env.NODE_ENV === 'production';
+	if (!isProd) {
+		return res.status(500).json({ error: err.message || 'Erreur interne serveur', stack: err.stack });
+	}
+	return res.status(500).json({ error: 'Erreur interne serveur' });
+});
+
+// Global handlers for unexpected errors to aid debugging during development
+process.on('unhandledRejection', (reason) => {
+	console.error('Unhandled Rejection at:', reason);
+});
+process.on('uncaughtException', (err) => {
+	console.error('Uncaught Exception:', err);
 });
 
 // Try to test DB connection at startup (non-blocking)

@@ -1,5 +1,9 @@
 const router = require("express").Router();
 const ctrl = require("../controllers/restaurants.controller");
+const auth = require('../middlewares/auth');
+
+// Protect all restaurant endpoints: require a valid JWT access token
+router.use(auth);
 
 //-------------------------------- CRUD Restaurants ----------------------------//
 

@@ -12,6 +12,11 @@ function signAccessToken(user) {
 
 exports.login = async (req, res, next) => {
   try {
+    // Ensure JWT secret is configured to avoid internal errors when signing tokens
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET is not set in environment');
+      return res.status(500).json({ error: 'Server configuration error: JWT_SECRET not set' });
+    }
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'email et password requis' });
 
@@ -29,3 +34,11 @@ exports.login = async (req, res, next) => {
   } catch (e) { next(e); }
 };
 // No refresh() or logout() exported — refresh-token feature removed.
+
+// Validate endpoint: used to verify token validity (protected by auth middleware)
+exports.validate = async (req, res, next) => {
+  try {
+    // auth middleware already populated req.user
+    return res.json({ ok: true, user: req.user });
+  } catch (e) { next(e); }
+};
