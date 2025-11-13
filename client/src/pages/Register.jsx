@@ -73,7 +73,7 @@ export default function Register() {
         </div>
 
         {error && <p style={{ color: 'crimson', marginTop: 12 }}>{error}</p>}
-        {success && <p style={{ color: 'green', marginTop: 12 }}>{success} <a href="#/login">Se connecter</a></p>}
+        {success && <p style={{ color: 'green', marginTop: 12 }}>{success} <a href="/login" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/login'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Se connecter</a></p>}
       </form>
     </div>
   )

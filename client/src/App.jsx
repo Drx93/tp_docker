@@ -1,25 +1,27 @@
 import { useEffect, useState } from 'react'
-import './App.css'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Restaurants from './pages/Restaurants'
+import Profile from './pages/Profile'
+import Header from './components/Header'
+import Footer from './components/Footer'
 
 function App() {
   const [status, setStatus] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [hash, setHash] = useState(() => window.location.hash || '#/')
+  const [path, setPath] = useState(() => window.location.pathname || '/')
   const [token, setToken] = useState(() => localStorage.getItem('accessToken'))
 
   useEffect(() => {
-    const onHash = () => setHash(window.location.hash || '#/')
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
+    const onPop = () => setPath(window.location.pathname || '/')
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
   }, [])
 
   useEffect(() => {
-    if (hash === '#/' || hash === '') fetchStatus()
-  }, [hash])
+    if (path === '/' || path === '') fetchStatus()
+  }, [path])
 
   async function fetchStatus() {
     setLoading(true)
@@ -46,11 +48,11 @@ function App() {
   }
 
   // simple hash routing
-  if (hash === '#/login') {
+  if (path === '/login') {
     return (
       <div style={{ padding: 24 }}>
         <nav style={{ marginBottom: 12 }}>
-          <a href="#/">Accueil</a> | <strong>Login</strong>
+          <a href="/" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Accueil</a> | <strong>Login</strong>
         </nav>
         <main className="card">
           <Login onLogin={handleLogin} />
@@ -60,7 +62,7 @@ function App() {
     )
   }
 
-  if (hash === '#/restaurants') {
+  if (path === '/restaurants') {
     return (
       <div style={{ padding: 24 }}>
         <Restaurants />
@@ -68,11 +70,19 @@ function App() {
     )
   }
 
-  if (hash === '#/register') {
+  if (path === '/profile') {
+    return (
+      <div style={{ padding: 24 }}>
+        <Profile />
+      </div>
+    )
+  }
+
+  if (path === '/register') {
     return (
       <div style={{ padding: 24 }}>
         <nav style={{ marginBottom: 12 }}>
-          <a href="#/">Accueil</a> | <strong>Inscription</strong>
+          <a href="/" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Accueil</a> | <strong>Inscription</strong>
         </nav>
         <main className="card">
           <Register />
@@ -83,16 +93,7 @@ function App() {
 
   return (
     <div>
-      <header style={{ padding: 24 }}>
-        <h1>Orium Agence — Front (Vite + React)</h1>
-        <p style={{ color: '#666' }}>Page d'accueil du client React</p>
-        <nav style={{ marginTop: 8 }}>
-          <a href="#/">Accueil</a> |
-          <a href="#/login" style={{ marginLeft: 8 }}>Login</a> |
-          <a href="#/register" style={{ marginLeft: 8 }}>Inscription</a>
-          {token && <button onClick={logout} style={{ marginLeft: 12 }}>Logout</button>}
-        </nav>
-      </header>
+      <Header token={token} logout={logout} />
 
       <main className="card" style={{ margin: 24 }}>
         <section>
@@ -110,7 +111,7 @@ function App() {
         <section style={{ marginTop: 16, textAlign: 'left' }}>
           <h2>Liens utiles</h2>
           <ul>
-            <li><a href="#/restaurants">Page Restaurants (client)</a></li>
+            <li><a href="/restaurants" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/restaurants'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Page Restaurants (client)</a></li>
             <li><a href="/api/restaurants">GET /api/restaurants</a></li>
             <li><a href="/auth">Auth endpoints (login/refresh)</a></li>
             <li><a href="/api/user-restaurants/select">POST /api/user-restaurants/select</a> (liaison user↔restaurant)</li>
@@ -122,6 +123,8 @@ function App() {
           <p style={{ color: '#444' }}>Si tu veux, je peux ajouter une page <em>Restaurants</em> qui affiche la liste et une page <em>Mon espace</em> protégée par token.</p>
         </section>
       </main>
+
+      <Footer />
     </div>
   )
 }

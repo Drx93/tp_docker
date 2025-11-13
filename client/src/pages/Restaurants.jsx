@@ -5,10 +5,11 @@ export default function Restaurants() {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken')
-    if (!token) {
-      // Redirect to login when token is missing
-      window.location.hash = '#/login'
-      return
+      if (!token) {
+        // Redirect to login when token is missing (SPA pushState + notify)
+        window.history.pushState({}, '', '/login')
+        window.dispatchEvent(new PopStateEvent('popstate'))
+        return
     }
 
     // Validate token with server to ensure it's valid (not just present)
@@ -25,9 +26,10 @@ export default function Restaurants() {
       } catch (e) {
         // ignore
       }
-      // invalid -> redirect
-      localStorage.removeItem('accessToken')
-      window.location.hash = '#/login'
+        // invalid -> redirect
+        localStorage.removeItem('accessToken')
+        window.history.pushState({}, '', '/login')
+        window.dispatchEvent(new PopStateEvent('popstate'))
     })()
   }, [])
 
@@ -44,7 +46,7 @@ export default function Restaurants() {
   return (
     <div style={{ padding: 24 }}>
       <nav style={{ marginBottom: 12 }}>
-        <a href="#/">Accueil</a> | <strong>Restaurants</strong>
+          <a href="/" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Accueil</a> | <strong>Restaurants</strong>
       </nav>
       <main className="card">
         <h1>Restaurants</h1>
