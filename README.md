@@ -43,6 +43,20 @@ MONGO_URI=mongodb://127.0.0.1:27017/orium_agence_scrapper_nosql
 JWT_SECRET=ton_secret_jwt_key
 ```
 
+Rate limiting: le projet utilise `express-rate-limit`. La configuration par défaut se trouve dans `src/middlewares/rateLimiter.js` (fenêtre 5 minutes, 100 requêtes). Vous pouvez modifier ces valeurs ou créer des limiteurs spécifiques via la factory `createLimiter` exportée par ce fichier.
+
+CORS: Le projet utilise `cors` pour gérer les origines autorisées. Vous pouvez configurer le comportement via ces variables d'environnement dans votre `.env`:
+
+```
+# Autoriser toutes les origines (utile en dev)
+CORS_ALLOW_ALL=true
+
+# Ou limiter aux origines listées (CSV)
+CORS_ALLOWED_ORIGINS=https://example.com,https://frontend.local
+```
+
+Par défaut (si aucune variable n'est définie) le serveur autorise toutes les origines pour faciliter le développement.
+
 ---
 
 ## Démarrage

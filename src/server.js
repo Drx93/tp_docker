@@ -10,6 +10,25 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// CORS configuration
+const cors = require('cors');
+if (process.env.CORS_ALLOW_ALL === 'true') {
+	app.use(cors());
+} else if (process.env.CORS_ALLOWED_ORIGINS) {
+	const origins = process.env.CORS_ALLOWED_ORIGINS.split(',').map(s => s.trim());
+	app.use(cors({ origin: function(origin, cb) {
+		if (!origin) return cb(null, true);
+		if (origins.indexOf(origin) !== -1) return cb(null, true);
+		cb(new Error('Origin not allowed by CORS'));
+	}}));
+} else {
+	app.use(cors());
+}
+
+// Rate limiter (global)
+const { defaultLimiter } = require('./middlewares/rateLimiter');
+app.use(defaultLimiter);
+
 // Mount routes
 const userRoutes = require("./routes/users.routes");
 app.use("/api/users", userRoutes);
