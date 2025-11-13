@@ -32,6 +32,9 @@ app.use(defaultLimiter);
 // Mount routes
 const userRoutes = require("./routes/users.routes");
 app.use("/api/users", userRoutes);
+
+const restaurantsRoutes = require("./routes/restaurants.routes");
+app.use("/api/restaurants", restaurantsRoutes);
 // Auth routes
 const authRoutes = require('./routes/auth.routes');
 app.use('/auth', authRoutes);

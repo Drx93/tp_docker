@@ -31,7 +31,8 @@ if (process.env.CORS_ALLOW_ALL === 'true') {
 }
 
 // Routes
-app.use('/', routes);
+
+app.use('/api/restaurants', routes);
 
 // Health check
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
