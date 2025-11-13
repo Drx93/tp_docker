@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 
-const RestaurantSchema = new Schema({ //On définit le schéma de la collection "restaurants" en fonction des données scrappées auparavant
+// On définit le schéma de la collection. La collection Mongo utilisée par l'application
+// s'appelle `orium_agence_scrapper_nosql`, on la fixe explicitement pour éviter
+// les confusions entre différentes bases/collections (voir issue recent).
+const RestaurantSchema = new Schema({
     title: {type : String, required: true},
     address: {type: String, required: true},
     website: {type: String},
@@ -24,8 +27,7 @@ const RestaurantSchema = new Schema({ //On définit le schéma de la collection 
     placeId: {type: String, required: true},
     mainEmail: {type: String},
     otherEmails: {type: [String]}
-});
-  
+}, { collection: 'orium_agence_scrapper_nosql' });
 
-module.exports = mongoose.models.Restaurant || mongoose.model('Restaurant', RestaurantSchema); //On exporte le modèle Mongoose basé sur le schéma défini, en vérifiant d'abord s'il existe déjà pour éviter les erreurs de recompilation
+module.exports = mongoose.models.Restaurant || mongoose.model('Restaurant', RestaurantSchema);
 
