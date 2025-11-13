@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import RestaurantInfo from './RestaurantInfos'
 
 export default function Restaurants() {
   const [checking, setChecking] = useState(true)
@@ -43,15 +44,97 @@ export default function Restaurants() {
     )
   }
 
+  // Child component can safely use hooks even though parent does an early return
+  function RestaurantsList() {
+    const [restaurants, setRestaurants] = React.useState(null)
+    const [loading, setLoading] = React.useState(true)
+    const [error, setError] = React.useState(null)
+
+    React.useEffect(() => {
+      let mounted = true
+      const token = localStorage.getItem('accessToken')
+      ;(async () => {
+        try {
+          const res = await fetch('/api/restaurants', {
+            headers: token ? { Authorization: `Bearer ${token}` } : {}
+          })
+          if (!res.ok) throw new Error(`Erreur ${res.status}`)
+          const data = await res.json()
+          if (mounted) {
+            setRestaurants(Array.isArray(data) ? data : [])
+            setLoading(false)
+          }
+        } catch (err) {
+          if (mounted) {
+            setError(err.message || 'Erreur lors de la récupération')
+            setLoading(false)
+          }
+        }
+      })()
+      return () => {
+        mounted = false
+      }
+    }, [])
+
+    if (loading) return <p>Chargement des restaurants…</p>
+    if (error) return <p style={{ color: 'red' }}>{error}</p>
+    if (!restaurants || restaurants.length === 0) return <p>Aucun restaurant trouvé.</p>
+
+    return (
+      <div>
+      {restaurants.map((r) => {
+        const id = r.id || r._id
+        const key = id || JSON.stringify(r)
+        const go = () => {
+        if (id) {
+          window.location.hash = `#/restaurants/${id}`
+        }
+        }
+        return (
+          <div
+            key={key}
+            id={key}
+            onClick={go}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          go()
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            style={{ cursor: 'pointer', display: 'flex', gap: 8, alignItems: 'center', padding: 8 }}
+          >
+            <img
+              src={r.thumbnail}
+              alt={`Photo de ${r.title || 'du restaurant'}`}
+              style={{ width: 32, height: 32, objectFit: 'cover', verticalAlign: 'middle', marginRight: 8 }}
+            />
+            <div>
+              <p style={{ margin: 0, fontWeight: 'bold' }}>{r.title || 'Sans nom'}</p>
+              <p style={{ margin: 0 }}>{r.address}</p>
+              <p style={{ margin: 0 }}>{'Note : ' + (r.rating ?? 'N/A')}</p>
+              <p style={{ margin: 0 }}>{'Nombre d\'avis : ' + (r.reviews ?? 0)}</p>
+            </div>
+          </div>
+        )
+      })}
+
+      </div>
+    )
+  }
+
   return (
     <div style={{ padding: 24 }}>
       <nav style={{ marginBottom: 12 }}>
           <a href="/" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Accueil</a> | <strong>Restaurants</strong>
       </nav>
-      <main className="card">
-        <h1>Restaurants</h1>
-        <p style={{ color: '#666' }}>Page liste des restaurants (placeholder)</p>
+      <main className="card" style={{ padding: 16 }}>
+        <h2>Liste des Restaurants</h2>
+        <RestaurantsList />
       </main>
+      <RestaurantInfo />
     </div>
   )
 }
+
