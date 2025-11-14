@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const db = require("./db/db-postgres");
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 
 dotenv.config();
 
@@ -29,6 +31,10 @@ if (process.env.CORS_ALLOW_ALL === 'true') {
 // Limitateur de débit (global)
 const { defaultLimiter } = require('./middlewares/rateLimiter');
 app.use(defaultLimiter);
+
+// Swagger UI (base definition, à compléter selon les routes)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
+app.get('/api-docs.json', (req, res) => res.json(swaggerSpec));
 
 // Montage des routes
 const userRoutes = require("./routes/users.routes");
