@@ -1,7 +1,8 @@
+// Router pour les routes liées aux restaurants sélectionnés par l'utilisateur
 const router = require('express').Router();
-const ctrl = require('../controllers/userRestaurants.controller');
+const ctrl = require('../controllers/userRestaurants.controller'); // importe le contrôleur gérant la logique
 
-// Create or return link between user and restaurant
+// Crée ou retourne le lien entre un utilisateur et un restaurant
 router.post('/select', ctrl.selectRestaurant);
 
-module.exports = router;
+module.exports = router; // exporte le routeur pour l'utiliser dans l'application

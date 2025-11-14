@@ -1,44 +1,45 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const Users = require('../models/users.model');
+const bcrypt = require('bcrypt'); // chiffrement des mots de passe
+const jwt = require('jsonwebtoken'); // gestion des JWT
+const Users = require('../models/users.model'); // modèle utilisateur
 
-const ACCESS_EXPIRES = process.env.ACCESS_EXPIRES || '1h';
+const ACCESS_EXPIRES = process.env.ACCESS_EXPIRES || '1h'; // durée de validité du token
 
 function signAccessToken(user) {
+  // crée un JWT avec subject et rôle
   return jwt.sign({ sub: user.id, role: user.role_id || null }, process.env.JWT_SECRET, { expiresIn: ACCESS_EXPIRES });
 }
 
-// No refresh-token support: authentication issues short-lived access tokens only.
+// Pas de refresh-token : on ne délivre que des access tokens courts.
 
 exports.login = async (req, res, next) => {
   try {
-    // Ensure JWT secret is configured to avoid internal errors when signing tokens
+    // Vérifier que le secret est configuré pour éviter des erreurs internes
     if (!process.env.JWT_SECRET) {
       console.error('JWT_SECRET is not set in environment');
       return res.status(500).json({ error: 'Server configuration error: JWT_SECRET not set' });
     }
+
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'email et password requis' });
+    if (!email || !password) return res.status(400).json({ error: 'email et password requis' }); // paramètres manquants
 
-  // Find user by email
-  const user = await Users.findByEmail(email);
-  if (!user) return res.status(401).json({ error: 'Identifiants invalides' });
+    // Trouver l'utilisateur par email
+    const user = await Users.findByEmail(email);
+    if (!user) return res.status(401).json({ error: 'Identifiants invalides' }); // utilisateur introuvable
 
-  // Compare password with stored hash
-  const ok = await bcrypt.compare(password, user.password_hash);
-    if (!ok) return res.status(401).json({ error: 'Identifiants invalides' });
+    // Comparer le mot de passe avec le hash stocké
+    const ok = await bcrypt.compare(password, user.password_hash);
+    if (!ok) return res.status(401).json({ error: 'Identifiants invalides' }); // mot de passe incorrect
 
-    // Create access token only (no refresh token)
+    // Générer et retourner le token d'accès
     const accessToken = signAccessToken(user);
     return res.json({ accessToken });
   } catch (e) { next(e); }
 };
-// No refresh() or logout() exported — refresh-token feature removed.
+// Pas d'exports refresh() ou logout() — fonctionnalité supprimée.
 
-// Validate endpoint: used to verify token validity (protected by auth middleware)
+// Endpoint de validation : vérifie la validité du token (middleware d'auth doit remplir req.user)
 exports.validate = async (req, res, next) => {
   try {
-    // auth middleware already populated req.user
-    return res.json({ ok: true, user: req.user });
+    return res.json({ ok: true, user: req.user }); // renvoie l'utilisateur authentifié
   } catch (e) { next(e); }
 };
