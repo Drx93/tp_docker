@@ -127,34 +127,11 @@ export default function RestaurantInfo({ id: propId }) {
               </button>
             </div>
             {restaurant.thumbnail != null && (
-              (() => {
-                const normalizeThumb = (url) => {
-                  if (!url) return null
-                  if (url.startsWith('//')) return `https:${url}`
-                  if (url.startsWith('/')) {
-                    const isVite = typeof window !== 'undefined' && window.location.port === '5173'
-                    const apiBase = isVite ? 'http://localhost:3000' : ''
-                    return apiBase + url
-                  }
-                  return url
-                }
-                const placeholder = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect width="100%" height="100%" fill="%23eee"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-size="16">No image</text></svg>'
-                return (
-                  <img
-                    src={normalizeThumb(restaurant.thumbnail) || placeholder}
-                    alt={restaurant.name}
-                    style={{ maxWidth: "100%", height: "auto", marginBottom: 16 }}
-                    loading="lazy"
-                    onError={(e) => {
-                      try {
-                        // eslint-disable-next-line no-console
-                        console.warn('RestaurantInfos image failed to load:', restaurant.thumbnail)
-                      } catch (err) {}
-                      e.currentTarget.src = placeholder
-                    }}
-                  />
-                )
-              })()
+              <img
+                src={restaurant.thumbnail}
+                alt={restaurant.name}
+                style={{ maxWidth: "100%", height: "auto", marginBottom: 16 }}
+              />
             )}
             {restaurant.address != null && (
               <p>
