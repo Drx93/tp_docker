@@ -5,7 +5,6 @@ import Restaurants from './pages/Restaurants'
 import RestaurantInfo from './pages/RestaurantInfos'
 import Profile from './pages/Profile'
 import Header from './components/Header'
-import Footer from './components/Footer'
 
 function App() {
   const [status, setStatus] = useState(null)
@@ -121,19 +120,7 @@ function App() {
           {!status && !error && !loading && <p style={{ color: '#666' }}>Aucune donnée — clique sur Rafraîchir.</p>}
         </section>
 
-        <section style={{ marginTop: 16, textAlign: 'left' }}>
-          <h2>Liens utiles</h2>
-          <ul>
-            <li><a href="/restaurants" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/restaurants'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Page Restaurants (client)</a></li>
-            <li><a href="/api/restaurants">GET /api/restaurants</a></li>
-            <li><a href="/auth">Auth endpoints (login/refresh)</a></li>
-            <li><a href="/api/user-restaurants/select">POST /api/user-restaurants/select</a> (liaison user↔restaurant)</li>
-          </ul>
-        </section>
-
       </main>
-
-      <Footer />
     </div>
   )
 }
