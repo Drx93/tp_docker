@@ -28,8 +28,21 @@ npm i swagger-ui-express swagger-jsdoc
 npm i pg mongoose mongodb-memory-server
 npm i -D jest supertest cross-env
 npm i bcrypt jsonwebtoken express-rate-limit
+npm install swagger-ui-express js-yaml
 ```
 
+Pour installer toutes les dépendances du projet :
+
+```bash
+# à la racine (backend)
+npm install
+
+# installer aussi les dépendances du front-end (client) qui utilise Vite
+cd client
+npm install
+```
+
+Remarque : le client utilise `vite` (installé dans `client/devDependencies`). Lancer `npm run dev` doit être exécuté depuis le dossier `client`.
 ---
 
 ## Configuration
@@ -61,34 +74,82 @@ Par défaut (si aucune variable n'est définie) le serveur autorise toutes les o
 
 ## Démarrage
 
-### Lancer le serveur en développement
+### Backend (API)
+
+Lancer le serveur en développement/production depuis la racine :
 
 ```bash
+# installez les dépendances à la racine puis démarrez le serveur
+npm install
+npm start
+# (le script 'start' exécute `node src/server.js`)
+```
+
+Si vous souhaitez un redémarrage automatique en développement, installez `nodemon` et ajoutez un script `dev` dans `package.json` :
+
+```bash
+# exemple (optionnel) :
+npm i -D nodemon
+# puis dans package.json ajouter "dev": "nodemon src/server.js"
+# et lancer :
 npm run dev
 ```
 
-### Lancer le serveur en production
+### Frontend (client - Vite)
+
+Le frontend se trouve dans le dossier `client` et utilise Vite. Pour lancer le serveur de développement :
 
 ```bash
-npm start
+cd client
+npm install
+npm run dev
+```
+
+Pour construire le frontend :
+
+```bash
+cd client
+npm run build
+```
+
+Pour prévisualiser le build :
+
+```bash
+cd client
+npm run preview
 ```
 
 ---
 
 ## Structure du projet
-à revoir cette partie, c'est juste l'exemple type ducoup
+
+Arborescence adaptée au dépôt actuel (backend + frontend séparés) :
+
 ```
-├─ /src
-│  ├─ /controllers    # Logique des routes
-│  ├─ /db             # Connexions au db
-│  ├─ /models         # Models SQL et NoSQL
-│  ├─ /routes         # Définition des endpoints
-│  ├─ /middlewares    # CORS, rate limiter, auth, etc.
-│  └─ /utils          # Fonctions utilitaires
-├─ /tests              # Tests d'intégration et unitaires
-├─ .env
-└─ package.json
+package.json               # scripts & dépendances backend
+README.md                  # documentation (ce fichier)
+client/                    # frontend React + Vite
+	├─ package.json          # scripts & dépendances front (vite)
+	└─ src/                  # code source frontend (React)
+scripts/                   # utilitaires et scripts (CSV, conversion...)
+src/                       # code backend (API)
+	├─ app.js                # configuration de l'app Express (optionnel)
+	├─ server.js             # point d'entrée (démarrage du serveur)
+	├─ controllers/          # logique des endpoints (auth, restaurants...)
+	├─ db/                   # connexions BDD (Postgres / Mongo)
+	├─ middlewares/          # middlewares (auth, rate limiter, CORS...)
+	├─ models/               # modèles (SQL / NoSQL)
+	└─ routes/               # définition des routes
+db/                        # fichiers SQL init / structure-bdd
+structure-bdd/             # scripts / dump SQL pour la BDD
+tests/                     # tests Jest / Supertest
+.env                       # fichier d'exemple (à créer localement)
 ```
+
+Notes :
+- Le frontend est contenu dans le dossier `client` et utilise Vite. Lancer le dev server depuis `client` (`npm run dev`).
+- Le backend se situe à la racine dans `src/` et se lance avec `npm start` (ou `npm run dev` si vous ajoutez `nodemon`).
+On a donc besoin de deux terminal d'ouvert pour pouvoir lancer l'api
 
 ---
 
