@@ -9,9 +9,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-// Note: legacy static frontend removed. Frontend is served separately (e.g. Vite dev server or built client).
+// Remarque : frontend statique hérité supprimé. Le frontend est servi séparément (ex. serveur dev Vite ou client compilé).
 
-// CORS configuration
+// Configuration CORS
 const cors = require('cors');
 if (process.env.CORS_ALLOW_ALL === 'true') {
 	app.use(cors());
@@ -26,24 +26,24 @@ if (process.env.CORS_ALLOW_ALL === 'true') {
 	app.use(cors());
 }
 
-// Rate limiter (global)
+// Limitateur de débit (global)
 const { defaultLimiter } = require('./middlewares/rateLimiter');
 app.use(defaultLimiter);
 
-// Mount routes
+// Montage des routes
 const userRoutes = require("./routes/users.routes");
 app.use("/api/users", userRoutes);
 
 const restaurantsRoutes = require("./routes/restaurants.routes");
 app.use("/api/restaurants", restaurantsRoutes);
-// Auth routes
+// Routes d'authentification
 const authRoutes = require('./routes/auth.routes');
 app.use('/auth', authRoutes);
-// User-Restaurants routes (link Postgres users with Mongo restaurants)
+// Routes utilisateur-restaurants (lier les utilisateurs Postgres aux restaurants Mongo)
 const userRestaurantsRoutes = require('./routes/userRestaurants.routes');
 app.use('/api/user-restaurants', userRestaurantsRoutes);
 
-// Health
+// Point de santé / statut
 app.get("/api/status", (req, res) => {
 	res.json({ status: "ok", time: new Date().toISOString() });
 });
@@ -51,7 +51,7 @@ app.get("/api/status", (req, res) => {
 // 404
 app.use((req, res) => res.status(404).json({ error: "Route inconnue" }));
 
-// Error handler (logs full error in non-production for easier debugging)
+// Gestionnaire d'erreurs (logge l'erreur complète hors production pour faciliter le debug)
 app.use((err, req, res, next) => {
 	console.error('Erreur serveur:', err);
 	const isProd = process.env.NODE_ENV === 'production';
@@ -61,7 +61,7 @@ app.use((err, req, res, next) => {
 	return res.status(500).json({ error: 'Erreur interne serveur' });
 });
 
-// Global handlers for unexpected errors to aid debugging during development
+// Gestionnaires globaux pour erreurs inattendues afin d'aider le debug en développement
 process.on('unhandledRejection', (reason) => {
 	console.error('Unhandled Rejection at:', reason);
 });
@@ -69,14 +69,14 @@ process.on('uncaughtException', (err) => {
 	console.error('Uncaught Exception:', err);
 });
 
-// Try to test DB connection at startup (non-blocking)
+// Teste la connexion à la BD au démarrage (non bloquant)
 (async () => {
 	const ok = await db.testConnection();
 	if (ok) console.log('Connected to Postgres');
 	else console.log('Postgres not connected (check DATABASE_URL)');
 })();
 
-// Connect to MongoDB if MONGO_URI is provided
+// Se connecte à MongoDB si MONGO_URI est fourni
 if (process.env.MONGO_URI) {
 	mongoose.connect(process.env.MONGO_URI)
 		.then(() => console.log('Connected to MongoDB'))
@@ -85,8 +85,8 @@ if (process.env.MONGO_URI) {
 	console.warn('MONGO_URI not set in environment; MongoDB features will fail');
 }
 
-// Start the server only when this file is run directly (node src/server.js)
-// This prevents tests that `require('./src/server')` from opening a listening TCP server
+// Démarre le serveur seulement si ce fichier est exécuté directement (node src/server.js)
+// Cela empêche des tests qui font `require('./src/server')` d'ouvrir un serveur TCP à l'écoute
 if (require.main === module) {
 	app.listen(PORT, () => console.log(`API prête sur http://localhost:${PORT}`));
 }

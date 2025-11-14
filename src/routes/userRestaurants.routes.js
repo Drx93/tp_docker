@@ -1,8 +1,9 @@
+// Router pour les routes liées aux restaurants sélectionnés par l'utilisateur
 const router = require('express').Router();
 const ctrl = require('../controllers/userRestaurants.controller');
 const auth = require('../middlewares/auth');
 
-// Create or return link between user and restaurant
+// Crée ou retourne le lien entre un utilisateur et un restaurant
 router.post('/select', ctrl.selectRestaurant);
 
 // Mark a restaurant as liked for the authenticated user

@@ -1,11 +1,6 @@
 const UserRestaurants = require('../models/userRestaurants.model');
 const Restaurant = require('../models/restaurants.model');
 
-/**
- * POST /api/user-restaurants/select
- * body: { userId, restaurantId }
- * Creates (or returns existing) link between a Postgres user and a Mongo restaurant.
- */
 async function selectRestaurant(req, res, next) {
   try {
     const { userId, restaurantId } = req.body || {};

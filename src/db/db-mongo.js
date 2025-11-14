@@ -1,27 +1,40 @@
 import mongoose from "mongoose";
-import { MONGO_URI } from "../../env.js"; // Assurez-vous que MONGO_URI est défini dans env.js
+import { MONGO_URI } from "../../env.js"; // MONGO_URI doit être défini dans env.js
 
+// Fonction pour établir la connexion à MongoDB
 export const connectToMongoDB = async () => {
     try {
+        // Connexion à MongoDB avec l'URI fourni
         await mongoose.connect(MONGO_URI);
         console.log("Connecté à MongoDB");
 
+        // Écoute des erreurs de connexion
         mongoose.connection.on("error", (err) =>
             console.error("Erreur de connexion MongoDB :", err)
         );
+        // Événement lorsque la connexion est déconnectée
         mongoose.connection.on("disconnected", () =>
             console.log("MongoDB déconnecté")
         );
 
-        // Gestion de la fermeture propre de la connexion
+        // Gestionnaire pour fermer proprement la connexion avant l'arrêt du processus
         const gracefulShutdown = async () => {
-            await mongoose.disconnect();
-            console.log("Connexion MongoDB fermée");
-            process.exit(0);
+            try {
+                await mongoose.disconnect();
+                console.log("Connexion MongoDB fermée");
+            } catch (err) {
+                console.error("Erreur lors de la fermeture de MongoDB :", err);
+            } finally {
+                // Quitte le processus après la déconnexion
+                process.exit(0);
+            }
         };
-        process.on("SIGINT", gracefulShutdown);
-        process.on("SIGTERM", gracefulShutdown);
+
+        // Capturer les signaux d'arrêt pour effectuer une fermeture propre
+        process.on("SIGINT", gracefulShutdown);   // Ctrl+C
+        process.on("SIGTERM", gracefulShutdown);  // kill ou arrêt du système
     } catch (error) {
+        // Log et remontée de l'erreur en cas d'échec de connexion
         console.error("Erreur de connexion à MongoDB :", error);
         throw error;
     }
