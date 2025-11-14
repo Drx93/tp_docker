@@ -4,6 +4,17 @@ export default function RestaurantInfo({ id: propId }) {
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isFavori, setIsFavori] = useState(false);
+
+  // compute restaurant id from prop or pathname so handlers can use it
+  const rid =
+    propId ||
+    (() => {
+      const m =
+        window.location.pathname &&
+        window.location.pathname.match(/^\/restaurants\/(.+)$/);
+      return m ? decodeURIComponent(m[1]) : null;
+    })();
 
   useEffect(() => {
     const rid =
@@ -27,6 +38,22 @@ export default function RestaurantInfo({ id: propId }) {
         if (!res.ok) throw new Error(`Erreur ${res.status}`);
         const data = await res.json();
         if (mounted) setRestaurant(data);
+          // also fetch user favourites for this restaurant
+          if (mounted) {
+            try {
+              const token2 = localStorage.getItem('accessToken');
+              if (token2) {
+                const me = await fetch('/api/user-restaurants/me', { headers: { Authorization: `Bearer ${token2}` } });
+                if (me.ok) {
+                  const rows = await me.json();
+                  const found = (Array.isArray(rows) ? rows : []).find(rw => rw.restaurant_mongo_id === data.dataId || rw.restaurant_mongo_id === data._id);
+                  setIsFavori(Boolean(found && Array.isArray(found.status) && found.status.includes('favori')));
+                }
+              }
+            } catch (e) {
+              // ignore
+            }
+          }
       } catch (err) {
         if (mounted) setError(err.message || "Erreur lors de la récupération");
       } finally {
@@ -64,12 +91,70 @@ export default function RestaurantInfo({ id: propId }) {
             <h3 style={{ marginTop: 0 }}>
               {restaurant.title || restaurant.name}
             </h3>
+            <div style={{ marginBottom: 12 }}>
+              <button
+                type="button"
+                style={{ padding: '8px 12px', cursor: 'pointer' }}
+                onClick={async () => {
+                  try {
+                    const token = localStorage.getItem('accessToken');
+                    const apiBase = (typeof window !== 'undefined' && window.location.port === '5173') ? 'http://localhost:3000' : '';
+                    const url = `${apiBase}/api/user-restaurants/${isFavori ? 'unlike' : 'like'}`;
+                    const res = await fetch(url, {
+                      method: 'POST',
+                      headers: token ? { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } : { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ restaurantId: rid })
+                    });
+                    if (!res.ok) {
+                      const text = await res.text().catch(() => '');
+                      console.error('Like API responded', res.status, text);
+                    } else {
+                      const j = await res.json().catch(() => null);
+                      // toggle local state
+                      setIsFavori(!isFavori);
+                      // notify other components (RestaurantsList) to update UI
+                      try {
+                        window.dispatchEvent(new CustomEvent('user-restaurants-changed', { detail: { restaurantId: rid, favori: !isFavori } }));
+                      } catch (e) {}
+                      console.log(isFavori ? 'Removed favorite' : 'Added favorite', j);
+                    }
+                  } catch (e) {
+                    console.error('Erreur lors de l\'appel /like or /unlike', e);
+                  }
+                }}
+              >
+                {isFavori ? 'Retirer des favoris' : "J'aime"}
+              </button>
+            </div>
             {restaurant.thumbnail != null && (
-              <img
-                src={restaurant.thumbnail}
-                alt={restaurant.name}
-                style={{ maxWidth: "100%", height: "auto", marginBottom: 16 }}
-              />
+              (() => {
+                const normalizeThumb = (url) => {
+                  if (!url) return null
+                  if (url.startsWith('//')) return `https:${url}`
+                  if (url.startsWith('/')) {
+                    const isVite = typeof window !== 'undefined' && window.location.port === '5173'
+                    const apiBase = isVite ? 'http://localhost:3000' : ''
+                    return apiBase + url
+                  }
+                  return url
+                }
+                const placeholder = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect width="100%" height="100%" fill="%23eee"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23999" font-size="16">No image</text></svg>'
+                return (
+                  <img
+                    src={normalizeThumb(restaurant.thumbnail) || placeholder}
+                    alt={restaurant.name}
+                    style={{ maxWidth: "100%", height: "auto", marginBottom: 16 }}
+                    loading="lazy"
+                    onError={(e) => {
+                      try {
+                        // eslint-disable-next-line no-console
+                        console.warn('RestaurantInfos image failed to load:', restaurant.thumbnail)
+                      } catch (err) {}
+                      e.currentTarget.src = placeholder
+                    }}
+                  />
+                )
+              })()
             )}
             {restaurant.address != null && (
               <p>
