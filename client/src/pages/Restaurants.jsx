@@ -129,12 +129,59 @@ export default function Restaurants() {
   return (
     <div style={{ padding: 24 }}>
       <nav style={{ marginBottom: 12 }}>
-          <a href="/" onClick={e => { e.preventDefault(); window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) }}>Accueil</a> | <strong>Restaurants</strong>
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault()
+            window.history.pushState({}, '', '/')
+            window.dispatchEvent(new PopStateEvent('popstate'))
+          }}
+        >
+          Accueil
+        </a>{' '}
+        | <strong>Restaurants</strong>
       </nav>
-      <main className="card" id='mainRestaurants' style={{ padding: 16 }}>
+
+      <main className="card" id="mainRestaurants" style={{ padding: 16 }}>
         <h2>Liste des Restaurants</h2>
+
+        {/* Barre de recherche fonctionnelle */}
+        <div style={{ marginBottom: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
+          <label htmlFor="restaurantSearch" style={{ display: 'none' }}>
+            Recherche
+          </label>
+          <input
+            id="restaurantSearch"
+            type="search"
+            placeholder="Rechercher par nom"
+            aria-label="Rechercher des restaurants"
+            style={{ flex: 1, padding: '8px 10px' }}
+            onChange={(e) => {
+              const q = (e.target.value || '').trim().toLowerCase()
+              const items = document.querySelectorAll('#mainRestaurants article [role="button"]')
+              let visible = 0
+              items.forEach((el) => {
+                // Match only the restaurant name (first <p> inside the button)
+                const titleEl = el.querySelector('p')
+                const nameText = (titleEl?.textContent || '').toLowerCase()
+                const match = q === '' || nameText.includes(q)
+                el.style.display = match ? 'flex' : 'none'
+                if (match) visible += 1
+              })
+              const counter = document.getElementById('restaurantsMatchCount')
+              if (counter) counter.textContent = visible.toString()
+            }}
+          />
+          <div style={{ minWidth: 56, textAlign: 'right' }}>
+            <small>
+              <span id="restaurantsMatchCount">0</span>
+            </small>
+          </div>
+        </div>
+
         <RestaurantsList />
       </main>
+
       <RestaurantInfo />
     </div>
   )

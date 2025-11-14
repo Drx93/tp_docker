@@ -131,10 +131,6 @@ function App() {
           </ul>
         </section>
 
-        <section style={{ marginTop: 16 }}>
-          <h2>Prochaine étape</h2>
-          <p style={{ color: '#444' }}>Si tu veux, je peux ajouter une page <em>Restaurants</em> qui affiche la liste et une page <em>Mon espace</em> protégée par token.</p>
-        </section>
       </main>
 
       <Footer />
