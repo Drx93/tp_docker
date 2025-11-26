@@ -1,4 +1,4 @@
-// Routes pour la gestion des utilisateurs
+ // Routes pour la gestion des utilisateurs
 const router = require("express").Router();
 // Import du contrôleur qui contient la logique des routes utilisateurs
 const ctrl = require("../controllers/users.controller");
