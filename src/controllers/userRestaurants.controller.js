@@ -8,10 +8,19 @@ async function selectRestaurant(req, res, next) {
 
     const link = await UserRestaurants.linkUserToRestaurant(userId, restaurantId);
     // fetch restaurant details by dataId
-    const dataId = link.restaurant_mongo_id;
+    const dataId = link.restaurant_id;
     const restaurant = await Restaurant.findOne({ dataId }).lean();
 
-    return res.status(201).json({ userId: link.user_id, restaurant, status: link.status || [] });
+    return res.status(201).json({ 
+      userId: link.user_id, 
+      restaurant, 
+      isFavorite: link.is_favorite,
+      favoritedAt: link.favorited_at,
+      isViewed: link.is_viewed,
+      viewedAt: link.viewed_at,
+      isContacted: link.is_contacted,
+      contactedAt: link.contacted_at
+    });
   } catch (e) {
     if (e.message && e.message.includes('introuvable')) return res.status(404).json({ error: 'Restaurant introuvable' });
     return next(e);
@@ -22,7 +31,7 @@ async function selectRestaurant(req, res, next) {
  * POST /api/user-restaurants/like
  * body: { restaurantId }
  * Requires auth middleware to inject req.user
- * Marks the given restaurant as 'like' for the current user
+ * Marks the given restaurant as favorite for the current user
  */
 async function markLiked(req, res, next) {
   try {
@@ -34,17 +43,23 @@ async function markLiked(req, res, next) {
     // ensure link exists and get restaurant data id
     const link = await UserRestaurants.linkUserToRestaurant(userId, restaurantId);
     console.log('[markLiked] link', link);
-    const restaurantDataId = link.restaurant_mongo_id;
+    const restaurantDataId = link.restaurant_id;
 
-    // merge statuses, add 'favori' without duplicates (DB accepts French values)
-    const existing = Array.isArray(link.status) ? link.status : [];
-    const toSet = Array.from(new Set([...(existing || []), 'favori']));
-
-    const updated = await UserRestaurants.updateStatus(userId, restaurantDataId, toSet);
+    // Met à jour le statut favori avec la date
+    const updated = await UserRestaurants.updateFavoriteStatus(userId, restaurantDataId, true);
     console.log('[markLiked] updated', updated);
-    if (!updated) return res.status(500).json({ error: "Impossible d'ajouter le statut" });
+    if (!updated) return res.status(500).json({ error: "Impossible d'ajouter aux favoris" });
 
-    return res.status(200).json({ userId: updated.user_id, restaurantDataId: updated.restaurant_mongo_id, status: updated.status });
+    return res.status(200).json({ 
+      userId: updated.user_id, 
+      restaurantId: updated.restaurant_id, 
+      isFavorite: updated.is_favorite,
+      favoritedAt: updated.favorited_at,
+      isViewed: updated.is_viewed,
+      viewedAt: updated.viewed_at,
+      isContacted: updated.is_contacted,
+      contactedAt: updated.contacted_at
+    });
   } catch (e) {
     if (e.message && e.message.includes('introuvable')) return res.status(404).json({ error: 'Restaurant introuvable' });
     return next(e);
@@ -54,9 +69,8 @@ async function markLiked(req, res, next) {
  * POST /api/user-restaurants/unlike
  * body: { restaurantId }
  * Requires auth middleware to inject req.user
- * Removes the 'favori' status for the current user on the given restaurant
+ * Removes the favorite status for the current user on the given restaurant
  */
-
 async function unmarkLiked(req, res, next) {
   try {
     const userId = req.user && req.user.id;
@@ -65,15 +79,22 @@ async function unmarkLiked(req, res, next) {
 
     // ensure link exists and get restaurant data id
     const link = await UserRestaurants.linkUserToRestaurant(userId, restaurantId);
-    const restaurantDataId = link.restaurant_mongo_id;
+    const restaurantDataId = link.restaurant_id;
 
-    const existing = Array.isArray(link.status) ? link.status : [];
-    const toSet = existing.filter((s) => s !== 'favori');
+    // Retire le statut favori et la date
+    const updated = await UserRestaurants.updateFavoriteStatus(userId, restaurantDataId, false);
+    if (!updated) return res.status(500).json({ error: "Impossible de retirer des favoris" });
 
-    const updated = await UserRestaurants.updateStatus(userId, restaurantDataId, toSet);
-    if (!updated) return res.status(500).json({ error: "Impossible de retirer le statut" });
-
-    return res.status(200).json({ userId: updated.user_id, restaurantDataId: updated.restaurant_mongo_id, status: updated.status });
+    return res.status(200).json({ 
+      userId: updated.user_id, 
+      restaurantId: updated.restaurant_id, 
+      isFavorite: updated.is_favorite,
+      favoritedAt: updated.favorited_at,
+      isViewed: updated.is_viewed,
+      viewedAt: updated.viewed_at,
+      isContacted: updated.is_contacted,
+      contactedAt: updated.contacted_at
+    });
   } catch (e) {
     if (e.message && e.message.includes('introuvable')) return res.status(404).json({ error: 'Restaurant introuvable' });
     return next(e);

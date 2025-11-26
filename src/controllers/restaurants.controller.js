@@ -1,5 +1,6 @@
 const Restaurant = require("../models/restaurants.model");
 const mongoose = require("mongoose");
+const UserRestaurants = require("../models/userRestaurants.model");
 
 //------------------------------------------------------------------------------//
 //--------------------------------------- GET ----------------------------------//
@@ -27,6 +28,20 @@ const getRestaurantById = async (req, res) => {
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant non trouvé" });
     }
+
+    // Marquer comme consulté si l'utilisateur est authentifié
+    if (req.user && req.user.id) {
+      try {
+        // Créer le lien utilisateur-restaurant s'il n'existe pas
+        const link = await UserRestaurants.linkUserToRestaurant(req.user.id, id);
+        // Marquer comme consulté avec la date
+        await UserRestaurants.updateViewedStatus(req.user.id, link.restaurant_id, true);
+      } catch (err) {
+        // On ignore les erreurs de tracking pour ne pas bloquer l'affichage du restaurant
+        console.error("Erreur lors du marquage comme consulté:", err);
+      }
+    }
+
     return res.json(restaurant);
   } catch (err) {
     console.error("getRestaurantById erreur", err);
