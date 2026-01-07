@@ -46,8 +46,8 @@ export default function RestaurantInfo({ id: propId }) {
                 const me = await fetch('/api/user-restaurants/me', { headers: { Authorization: `Bearer ${token2}` } });
                 if (me.ok) {
                   const rows = await me.json();
-                  const found = (Array.isArray(rows) ? rows : []).find(rw => rw.restaurant_mongo_id === data.dataId || rw.restaurant_mongo_id === data._id);
-                  setIsFavori(Boolean(found && Array.isArray(found.status) && found.status.includes('favori')));
+                  const found = (Array.isArray(rows) ? rows : []).find(rw => rw.restaurant_id === data.dataId || rw.restaurant_id === data._id);
+                  setIsFavori(Boolean(found && found.is_favorite));
                 }
               }
             } catch (e) {

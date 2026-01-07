@@ -74,7 +74,7 @@ export default function Restaurants() {
                 if (favRes.ok) {
                   const favRows = await favRes.json()
                   const favIds = new Set(
-                    (Array.isArray(favRows) ? favRows : []).filter((row) => Array.isArray(row.status) && row.status.includes('favori')).map((row) => row.restaurant_mongo_id)
+                    (Array.isArray(favRows) ? favRows : []).filter((row) => row.is_favorite).map((row) => row.restaurant_id)
                   )
                   setFavoritesSet(favIds)
                   setRestaurants((prev) => prev.map((r) => ({ ...r, favori: favIds.has(r.dataId) })))
