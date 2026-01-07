@@ -1,0 +1,29 @@
+# Dépendances
+node_modules
+client/node_modules
+
+# Fichiers de développement
+.git
+.gitignore
+README.md
+*.md
+
+# Fichiers de test
+tests/
+scripts/
+
+# Fichiers d'environnement (seront passés via docker-compose)
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode
+.idea
+
+# OS
+.DS_Store
+Thumbs.db
